@@ -162,7 +162,7 @@ class APIConfigView(HomeAssistantView):
 class APIStatesView(HomeAssistantView):
     """View to handle States requests."""
 
-    url = URL_API_STATES
+    url = "/api_v2/states"
     name = "api:states"
 
     @ha.callback
