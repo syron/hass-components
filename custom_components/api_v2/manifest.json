@@ -1,6 +1,6 @@
 {
-  "domain": "api",
-  "name": "Home Assistant API",
+  "domain": "api_v2",
+  "name": "Home Assistant Robert Mayer API",
   "documentation": "https://www.home-assistant.io/integrations/api",
   "dependencies": ["http"],
   "codeowners": ["@home-assistant/core"],
