@@ -1,9 +1,8 @@
 {
-  "domain": "api_v2",
+  "domain": "api",
   "name": "Home Assistant Robert Mayer API",
   "documentation": "https://www.home-assistant.io/integrations/api",
   "dependencies": ["http"],
-  "codeowners": ["@home-assistant/core"],
-  "quality_scale": "internal",
+  "codeowners": ["@syron"],
   "integration_type": "system"
 }
