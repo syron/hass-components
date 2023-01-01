@@ -4,5 +4,6 @@
   "documentation": "https://www.home-assistant.io/integrations/api",
   "dependencies": ["http"],
   "codeowners": ["@syron"],
-  "integration_type": "system"
+  "integration_type": "system",
+  "version": "1.0.2"
 }
