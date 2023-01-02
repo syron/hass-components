@@ -1,5 +1,5 @@
 {
-  "domain": "api",
+  "domain": "customapi",
   "name": "Home Assistant Robert Mayer API",
   "documentation": "https://www.home-assistant.io/integrations/api",
   "dependencies": ["http"],

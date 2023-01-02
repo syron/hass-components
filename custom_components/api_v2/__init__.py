@@ -13,16 +13,7 @@ from homeassistant.bootstrap import DATA_LOGGING
 from homeassistant.components.http import HomeAssistantView
 from homeassistant.const import (
     EVENT_HOMEASSISTANT_STOP,
-    MATCH_ALL,
-    URL_API,
-    URL_API_COMPONENTS,
-    URL_API_CONFIG,
-    URL_API_ERROR_LOG,
-    URL_API_EVENTS,
-    URL_API_SERVICES,
-    URL_API_STATES,
-    URL_API_STREAM,
-    URL_API_TEMPLATE,
+    MATCH_ALL
 )
 import homeassistant.core as ha
 from homeassistant.core import HomeAssistant
@@ -43,7 +34,7 @@ ATTR_REQUIRES_API_PASSWORD = "requires_api_password"
 ATTR_UUID = "uuid"
 ATTR_VERSION = "version"
 
-DOMAIN = "api"
+DOMAIN = "customapi"
 
 STREAM_PING_PAYLOAD = "ping"
 STREAM_PING_INTERVAL = 50  # seconds
@@ -69,9 +60,7 @@ class APIStatusView(HomeAssistantView):
     @ha.callback
     def get(self, request):
         """Retrieve if API is running."""
-        return self.json_message("API running.")
-
-
+        return self.json_message("API v2 running.")
 
 class APIStatesView(HomeAssistantView):
     """View to handle States requests."""
