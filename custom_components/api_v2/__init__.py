@@ -50,6 +50,71 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
     return True
 
+class APIEventStream(HomeAssistantView):
+    """View to handle EventStream requests."""
+
+    url = "/api_v2/stream"
+    name = "api:stream"
+
+    async def get(self, request):
+        """Provide a streaming interface for the event bus."""
+        if not request["hass_user"].is_admin:
+            raise Unauthorized()
+        hass = request.app["hass"]
+        stop_obj = object()
+        to_write = asyncio.Queue()
+
+        if restrict := request.query.get("restrict"):
+            restrict = restrict.split(",") + [EVENT_HOMEASSISTANT_STOP]
+
+        async def forward_events(event):
+            """Forward events to the open request."""
+            if restrict and event.event_type not in restrict:
+                return
+
+            _LOGGER.debug("STREAM %s FORWARDING %s", id(stop_obj), event)
+
+            if event.event_type == EVENT_HOMEASSISTANT_STOP:
+                data = stop_obj
+            else:
+                data = json_dumps(event)
+
+            await to_write.put(data)
+
+        response = web.StreamResponse()
+        response.content_type = "text/event-stream"
+        await response.prepare(request)
+
+        unsub_stream = hass.bus.async_listen(MATCH_ALL, forward_events)
+
+        try:
+            _LOGGER.debug("STREAM %s ATTACHED", id(stop_obj))
+
+            # Fire off one message so browsers fire open event right away
+            await to_write.put(STREAM_PING_PAYLOAD)
+
+            while True:
+                try:
+                    async with async_timeout.timeout(STREAM_PING_INTERVAL):
+                        payload = await to_write.get()
+
+                    if payload is stop_obj:
+                        break
+
+                    msg = f"data: {payload}\n\n"
+                    _LOGGER.debug("STREAM %s WRITING %s", id(stop_obj), msg.strip())
+                    await response.write(msg.encode("UTF-8"))
+                except asyncio.TimeoutError:
+                    await to_write.put(STREAM_PING_PAYLOAD)
+
+        except asyncio.CancelledError:
+            _LOGGER.debug("STREAM %s ABORT", id(stop_obj))
+
+        finally:
+            _LOGGER.debug("STREAM %s RESPONSE CLOSED", id(stop_obj))
+            unsub_stream()
+
+        return response
 
 class APIStatusView(HomeAssistantView):
     """View to handle Status requests."""
