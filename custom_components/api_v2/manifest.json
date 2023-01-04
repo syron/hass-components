@@ -5,5 +5,5 @@
   "dependencies": ["http"],
   "codeowners": ["@syron"],
   "integration_type": "system",
-  "version": "1.0.3"
+  "version": "1.0.4"
 }
